@@ -1,0 +1,103 @@
+# Oracle Machine Learning – Sales Forecast PoC
+
+This repository contains a **proof-of-concept** for forecasting monthly product sales using **Oracle Machine Learning (OML4SQL)** with the **Exponential Smoothing (ESM)** algorithm.
+
+The workflow demonstrates how to:
+- Generate synthetic historical data with seasonality and trend  
+- Prepare monthly features for modeling  
+- Train an OML time series model  
+- Validate on hold-out data  
+- Forecast future periods with confidence intervals  
+
+---
+
+## 🚀 Prerequisites
+
+- Oracle Database 19c/21c/23ai with **OML4SQL** option enabled  
+- User with privilege `CREATE MINING MODEL` and quota on tablespace  
+- Access via SQL*Plus, SQLcl, or SQL Developer  
+
+---
+
+## 📂 Files Overview
+
+### 1. `CreateUserTable.sql`
+- Creates the working schema (`POCOML`) and the base sales table.  
+- Grants required privileges and sets up environment.
+
+### 2. `PopulateTable.sql`
+- Generates **synthetic sales data** (2021–2024).  
+- Data has realistic **seasonality** (summer ↑, winter ↓), **trend** (+5% YoY), and **noise**.  
+- Produces ~1M rows in `SALES_RAW`.
+
+### 3. `DataPreparation.sql`
+- Aggregates raw rows into **monthly sales**.  
+- Creates `SALES_MTH (product, period_dt, units_month)`.  
+- Ensures one record per product/month for time series modeling.
+
+### 4. `ModelCreation.sql`
+- Builds the **time series model** using OML Exponential Smoothing (Holt–Winters).  
+- Key settings:  
+  - `ALGO_EXPONENTIAL_SMOOTHING`  
+  - Monthly interval, seasonality = 12  
+  - Forecast horizon = 24 months  
+  - Confidence level = 95%  
+- Model is stored as `SALES_ESM`.
+
+### 5. `Verification.sql`
+- Evaluates the model on **out-of-sample year 2024**.  
+- Metrics computed: RMSE, MAE, R².  
+- Confirms that the model generalizes to unseen data.  
+- (Optional: add MAPE for business readability.)
+
+### 6. `Forecast.sql`
+- Extracts **12-month forecast for 2025** from the model.  
+- Includes **lower/upper bounds** at 95% confidence.  
+- Results are grouped by month and ordered chronologically.
+
+### 7. `OML_POC_TIME_SERIES.sql`
+- **All-in-one script** that executes the entire flow:  
+  - Setup → Populate → Aggregate → Model build → Verify → Forecast.  
+- Useful for quick re-runs of the PoC.
+
+---
+
+## 📊 Workflow Summary
+
+1. **Setup environment** → `CreateUserTable.sql`  
+2. **Load historical data** → `PopulateTable.sql`  
+3. **Aggregate monthly features** → `DataPreparation.sql`  
+4. **Build model** → `ModelCreation.sql`  
+5. **Validate on 2024** → `Verification.sql`  
+6. **Forecast 2025** → `Forecast.sql`  
+7. (Alternative) Run everything at once → `OML_POC_TIME_SERIES.sql`
+
+---
+
+## ✅ Expected Results
+
+- **Verification (2024):**  
+  - Very low RMSE/MAE, R² ≈ 0.99+ (on synthetic data).  
+- **Forecast (2025):**  
+  - Seasonal pattern (peaks in summer, troughs in winter).  
+  - Year-over-year growth consistent with historical trend.  
+  - Forecast table with values and 95% confidence intervals.
+
+---
+
+## 🔮 Next Steps
+
+- Extend to **multiple products** using partitioned models  
+- Add external regressors (promotions, weather, etc.) for richer forecasting  
+- Automate retraining and forecast refresh with `DBMS_SCHEDULER` jobs  
+- Expose forecast via REST (ORDS) or dashboards (APEX, BI)
+
+---
+
+## 📖 References
+
+- [Oracle Database Machine Learning Documentation](https://docs.oracle.com/en/database/oracle/machine-learning/index.html)  
+- [DBMS_DATA_MINING Package](https://docs.oracle.com/en/database/oracle/oracle-database/23/arpls/DBMS_DATA_MINING.html)  
+- [OML Time Series (Exponential Smoothing)](https://docs.oracle.com/en/database/oracle/oracle-database/23/dmapi/exponential-smoothing.html)
+
+---
