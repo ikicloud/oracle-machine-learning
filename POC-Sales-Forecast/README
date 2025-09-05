@@ -11,7 +11,7 @@ The workflow demonstrates how to:
 
 ---
 
-## 🚀 Prerequisites
+## Prerequisites
 
 - Oracle Database 19c/21c/23ai with **OML4SQL** option enabled  
 - User with privilege `CREATE MINING MODEL` and quota on tablespace  
@@ -19,7 +19,7 @@ The workflow demonstrates how to:
 
 ---
 
-## 📂 Files Overview
+## Files Overview
 
 ### 1. `CreateUserTable.sql`
 - Creates the working schema (`POCOML`) and the base sales table.  
@@ -62,7 +62,7 @@ The workflow demonstrates how to:
 
 ---
 
-## 📊 Workflow Summary
+## Workflow Summary
 
 1. **Setup environment** → `CreateUserTable.sql`  
 2. **Load historical data** → `PopulateTable.sql`  
@@ -74,7 +74,7 @@ The workflow demonstrates how to:
 
 ---
 
-## ✅ Expected Results
+## Expected Results
 
 - **Verification (2024):**  
   - Very low RMSE/MAE, R² ≈ 0.99+ (on synthetic data).  
@@ -85,7 +85,7 @@ The workflow demonstrates how to:
 
 ---
 
-## 🔮 Next Steps
+## Next Steps
 
 - Extend to **multiple products** using partitioned models  
 - Add external regressors (promotions, weather, etc.) for richer forecasting  
