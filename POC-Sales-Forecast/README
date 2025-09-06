@@ -1,5 +1,5 @@
 # Oracle Machine Learning – Sales Forecast PoC
-
+# Blog article: https://iki-cloud.com/blog/f/sales-forecasting-with-oracle-machine-learning-time-series
 This repository contains a **proof-of-concept** for forecasting monthly product sales using **Oracle Machine Learning (OML4SQL)** with the **Exponential Smoothing (ESM)** algorithm.
 
 The workflow demonstrates how to:
